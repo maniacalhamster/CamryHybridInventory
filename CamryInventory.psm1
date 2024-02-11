@@ -98,7 +98,7 @@ function Get-DealerInventory {
 
     if ($dealer) {
         $expr += " |`
-        Where-Object dealer -Match \b$($dealer -join '\b|\b')\b"
+        Where-Object dealer -Match '\b$($dealer -join '\b|\b')\b'"
     }
 
     if ($dist) {
