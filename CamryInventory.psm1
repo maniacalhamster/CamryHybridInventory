@@ -87,31 +87,31 @@ function Get-DealerInventory {
 
     if ($color) {
         $expr += " |`
-        ? color -Match '\b$($color -join '\b|\b')\b'"
+        Where-Object color -Match '\b$($color -join '\b|\b')\b'"
     }
 
     if ($model) {
         $expr += " |`
-        ? model -Match '\b$(($model | ForEach-Object {$_ -creplace '(E)$', '$1 Hybrid$'}) -join '\b|\b')\b'
+        Where-Object model -Match '\b$(($model | ForEach-Object {$_ -creplace '(E)$', '$1 Hybrid$'}) -join '\b|\b')\b'
         "
     }
 
     if ($dealer) {
         $expr += " |`
-        ? dealer -Match \b$($dealer -join '\b|\b')\b"
+        Where-Object dealer -Match \b$($dealer -join '\b|\b')\b"
     }
 
     if ($dist) {
         $expr += " |`
-        ? distance -le $dist"
+        Where-Object distance -le $dist"
     }
 
     if ($options) {
-        $expr += " |
-        ? {
-            `$opts = (`$_.options | % optionCd)
+        $expr += " |`
+        Where-Object {
+            `$prefCDs = `$_.options.optionCd
             -not @(`"$($options -join '","')`").Where({
-                `$_ -NotIn `$opts
+                `$_ -NotIn `$prefCDs
             })
         }"
     }
@@ -126,10 +126,19 @@ function Get-DealerInventory {
                 Expression = { $_.P }
                 Descending = $true
             }
-            $expr += " | % {`$_ | select * -ExcludeProperty options; `$_.options | select `$optionPref, * | sort `$sortPref, optionType | ft }"
+            $expr += " |`
+            ForEach-Object {
+                `$_ | `
+                    Select-Object * -ExcludeProperty options; 
+                `$_.options |`
+                    Select-Object `$optionPref, * |`
+                    Sort-Object `$sortPref, optionType | `
+                    Format-Table }"
         }
         else {
-            $expr += " | select * -ExcludeProperty options | ft *"
+            $expr += " |`
+            Select-Object * -ExcludeProperty options |`
+            Format-Table *"
         }
     }
 
