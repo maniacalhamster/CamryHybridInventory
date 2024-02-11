@@ -142,4 +142,4 @@ function Get-AvailableOptions {
     return $uniqueOptions | Format-Table -GroupBy optionType
 }
 
-Export-ModuleMember -Function Get-DealerInventory, Get-AvailableOptions, Get-CarDetails
+Export-ModuleMember -Function Get-DealerInventory, Get-AvailableOptions
