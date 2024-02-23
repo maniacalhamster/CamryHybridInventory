@@ -92,8 +92,7 @@ function Get-DealerInventory {
 
     if ($model) {
         $expr += " |`
-        Where-Object model -Match '\b$(($model | ForEach-Object {$_ -creplace '(E)$', '$1 Hybrid$'}) -join '\b|\b')\b'
-        "
+        Where-Object model -Match '\b$(($model | ForEach-Object {$_ -creplace '(E)$', '$1 Hybrid$'}) -join '\b|\b')\b'"
     }
 
     if ($dealer) {
