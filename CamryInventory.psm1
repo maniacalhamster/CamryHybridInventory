@@ -48,6 +48,16 @@ $etaTo = @{
     Expression = { $_.eta.currToDate }
 }
 
+$age = @{
+    Name       = 'age'
+    Expression = {
+        $eta = $_.eta.currToDate
+        if ($eta) {
+            return ((Get-Date) - (Get-Date $eta)).Days
+        }
+    }
+}
+
 $options = @{
     Name       = 'options'
     Expression = {
@@ -55,7 +65,7 @@ $options = @{
     }
 }
 
-$data = $rawData | Select-Object -Property vin, distance, $dealer, $tsrp, $markup, $model, $color, $seating, isPreSold, holdStatus, $etaFrom, $etaTo, $options
+$data = $rawData | Select-Object -Property vin, distance, $dealer, $tsrp, $markup, $model, $color, $seating, isPreSold, holdStatus, $age, $etaFrom, $etaTo, $options
 $uniqueOptions = $data | ForEach-Object options | Select-Object -Unique * | Sort-Object optionType
 
 function Get-DealerInventory {
@@ -66,6 +76,15 @@ function Get-DealerInventory {
 
         [switch]
         $showOptions,
+
+        [switch]
+        $arrived,
+
+        [switch]
+        $transit,
+
+        [switch]
+        $building,
 
         [ValidateSet('Gray', 'Silver', 'Ice Edge', 'Ice Cap', 'Black', 'Blue', 'Red', 'Pearl')]
         [string[]]
@@ -84,6 +103,21 @@ function Get-DealerInventory {
     )
 
     $expr = "`$data"
+
+    if ($arrived) {
+        $expr += " |`
+        Where-Object age -ge 0"
+    }
+
+    if ($transit) {
+        $expr += " |`
+        Where-Object {`$_.age -and `$_.age -lt 0}"
+    }
+
+    if ($building) {
+        $expr += " |`
+        Where-Object age -eq `$null"
+    }
 
     if ($color) {
         $expr += " |`
