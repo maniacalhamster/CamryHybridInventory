@@ -53,7 +53,7 @@ $age = @{
     Expression = {
         $eta = $_.eta.currToDate
         if ($eta) {
-            return ((Get-Date) - (Get-Date $eta)).Days
+            return (Get-Date).Day - (Get-Date $eta).Day
         }
     }
 }
@@ -73,6 +73,12 @@ function Get-DealerInventory {
     Param (
         [int]
         $dist,
+
+        [int]
+        $maxAge,
+
+        [int]
+        $minAge,
 
         [switch]
         $showOptions,
@@ -137,6 +143,16 @@ function Get-DealerInventory {
     if ($dist) {
         $expr += " |`
         Where-Object distance -le $dist"
+    }
+
+    if ($maxAge -ne $null) {
+        $expr += " |`
+        Where-Object {`$_.age -le $maxAge}"
+    }
+
+    if ($minAge -ne $null) {
+        $expr += " |`
+        Where-Object {`$_.age -ge $minAge}"
     }
 
     if ($options) {
