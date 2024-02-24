@@ -105,7 +105,11 @@ function Get-DealerInventory {
         $options,
 
         [string[]]
-        $dealer
+        $dealer,
+
+        [ValidateSet('dist', 'age', 'tsrp', 'markup')]
+        [string[]]
+        $sortBy
     )
 
     $expr = "`$data"
@@ -163,6 +167,11 @@ function Get-DealerInventory {
                 `$_ -NotIn `$prefCDs
             })
         }"
+    }
+    
+    if ($sortBy) {
+        $expr += " |`
+        Sort-Object $($sortBy -replace 'dist', 'distance' -join ',')"
     }
 
     if ($PSCmdlet.MyInvocation.PipelineLength -eq $PSCmdlet.MyInvocation.PipelinePosition) {
