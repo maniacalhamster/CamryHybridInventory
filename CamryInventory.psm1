@@ -68,6 +68,20 @@ $options = @{
 $data = $rawData | Select-Object -Property vin, distance, $dealer, $tsrp, $markup, $model, $color, $seating, isPreSold, holdStatus, $age, $etaFrom, $etaTo, $options
 $uniqueOptions = $data | ForEach-Object options | Select-Object -Unique * | Sort-Object optionType
 
+$arrivalStatus = @{
+    Name       = 'Arrival Status'
+    Expression = {
+        if ($_.age -eq $null) {
+            "Build"
+        } elseif ($_.age -lt 0) {
+            "Transit"
+        } else {
+            "Ground"
+        }
+    }
+}
+
+
 function Get-DealerInventory {
     [CmdletBinding()]
     Param (
@@ -111,7 +125,7 @@ function Get-DealerInventory {
         [string[]]
         $sortBy = @('dist'),
 
-        [ValidateSet('age', 'color', 'dealer')]
+        [ValidateSet('arrivalStatus', 'color', 'dealer')]
         [string]
         $groupBy
     )
@@ -174,8 +188,8 @@ function Get-DealerInventory {
     }
     
     if ($groupBy) {
-        $groupByClause = "-GroupBy $($groupBy -join ',')"
-        $sortBy = @($groupBy) + $sortBy
+        $groupByClause = "-GroupBy $($groupBy -replace '(arrivalStatus)', '$$$1')"
+        $sortBy = @($groupBy -replace 'arrivalStatus', 'age') + $sortBy
     }
 
     if ($sortBy) {
