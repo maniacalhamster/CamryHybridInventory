@@ -74,10 +74,10 @@ function Get-DealerInventory {
         [int]
         $dist,
 
-        [int]
+        [System.Nullable[int]]
         $maxAge,
 
-        [int]
+        [System.Nullable[int]]
         $minAge,
 
         [switch]
