@@ -53,7 +53,7 @@ $age = @{
     Expression = {
         $eta = $_.eta.currToDate
         if ($eta) {
-            return (Get-Date).Day - (Get-Date $eta).Day
+            return ((Get-Date).Date - (Get-Date $eta).Date).Days
         }
     }
 }
