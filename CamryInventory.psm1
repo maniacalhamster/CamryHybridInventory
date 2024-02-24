@@ -107,9 +107,13 @@ function Get-DealerInventory {
         [string[]]
         $dealer,
 
-        [ValidateSet('dist', 'age', 'tsrp', 'markup')]
+        [ValidateSet('age', 'color', 'dealer', 'dist', 'tsrp', 'markup')]
         [string[]]
-        $sortBy
+        $sortBy = @('dist'),
+
+        [ValidateSet('age', 'color', 'dealer')]
+        [string]
+        $groupBy
     )
 
     $expr = "`$data"
@@ -169,6 +173,11 @@ function Get-DealerInventory {
         }"
     }
     
+    if ($groupBy) {
+        $groupByClause = "-GroupBy $($groupBy -join ',')"
+        $sortBy = @($groupBy) + $sortBy
+    }
+
     if ($sortBy) {
         $expr += " |`
         Sort-Object $($sortBy -replace 'dist', 'distance' -join ',')"
@@ -191,12 +200,12 @@ function Get-DealerInventory {
                 `$_.options |`
                     Select-Object `$optionPref, * |`
                     Sort-Object `$sortPref, optionType | `
-                    Format-Table }"
+                    Format-Table $groupByClause}"
         }
         else {
             $expr += " |`
             Select-Object * -ExcludeProperty options |`
-            Format-Table *"
+            Format-Table $groupByClause *"
         }
     }
 
