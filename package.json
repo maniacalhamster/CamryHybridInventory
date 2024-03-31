@@ -1,0 +1,14 @@
+{
+  "name": "camryhybridinventory",
+  "version": "1.0.0",
+  "description": "supplemental script to retrieve camry hybrid inventory data from toyota customer site",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^22.2.0"
+  }
+}
