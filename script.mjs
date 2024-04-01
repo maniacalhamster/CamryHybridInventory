@@ -1,18 +1,19 @@
 import puppeteer, { Page } from "puppeteer";
 import fs from 'fs';
+import { createRequire } from 'module';
 
 /**
  * main body of the script I want to run
  * @param {Page} page
  */
 async function script(page) {
-    const inventory_url = "https://www.toyota.com/search-inventory/model/camryhybrid/?zipcode=91730"
+    const inventory_url = `https://www.toyota.com/search-inventory/model/camryhybrid/?zipcode=${zipcode}`
     const graphql_url = "https://api.search-inventory.toyota.com/graphql";
     const distance_sel = 'select[name="distance"]';
 
     await page.goto(inventory_url);
     await page.waitForSelector(distance_sel);
-    page.select(distance_sel, "100").then(() => console.log("set distance"));
+    page.select(distance_sel, "100").then(() => console.log(`distance set to: ${distance}`));
 
     const vehicle_data = []
 
@@ -40,16 +41,33 @@ async function script(page) {
         }
     }
 
-    fs.writeFile('data.json', JSON.stringify(vehicle_data), (err) => console.log(err))
+    fs.writeFile('data.json', JSON.stringify(vehicle_data), (err) => {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log('wrote inventory data to: data.json')
+        }
+    })
 }
 
-// "main" async function to call. Mainly scaffolding w/ minor configurations
-const browser = await puppeteer.launch({headless: false});
+/**
+ * "main" async function call 
+ * - prompts user for zipcode/radius if not set already
+ * - mostly puppeteer scaffolding w/ minor configurations
+ * - catches errors
+ * - defers a final close on the browser if it still exists
+ */
 async function main() {
-    const page = await browser.newPage();
-    page.setDefaultTimeout(5000);
-    await script(page);
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  script(page)
+    .catch((err) => console.log(err))
+    .finally(() => browser?.close());
 }
 
-// call "main", catching any errors and deferring a final close on browser
-main().catch(err => console.log(err)).finally(() => browser?.close())
+const require = createRequire(import.meta.url)
+const {
+    zipcode: zipcode,
+    radius: distance
+} = require('./config.json')
+main()
