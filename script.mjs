@@ -52,7 +52,6 @@ async function script(page) {
 
 /**
  * "main" async function call 
- * - prompts user for zipcode/radius if not set already
  * - mostly puppeteer scaffolding w/ minor configurations
  * - catches errors
  * - defers a final close on the browser if it still exists
@@ -65,9 +64,12 @@ async function main() {
     .finally(() => browser?.close());
 }
 
+// import location info from config.json
 const require = createRequire(import.meta.url)
 const {
     zipcode: zipcode,
     radius: distance
 } = require('./config.json')
+
+// run puppeteer script
 main()
