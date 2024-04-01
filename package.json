@@ -2,9 +2,9 @@
   "name": "camryhybridinventory",
   "version": "1.0.0",
   "description": "supplemental script to retrieve camry hybrid inventory data from toyota customer site",
-  "main": "index.js",
+  "main": "script.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node script.mjs"
   },
   "author": "",
   "license": "MIT",
