@@ -6,9 +6,11 @@ Once node is installed, you can run `npm i` to let npm handle dependency install
 
 ## Setup
 
-1. Run the script that retrieves data with `node script.mjs`.
+1. Set appropriate zipcode and radius in `config.json`
 
-2. Import the powershell module with `Import-Module .\CamryInventory.psm1`.
+2. Run the script that retrieves data with `node script.mjs`.
+
+3. Import the powershell module with `Import-Module .\CamryInventory.psm1`.
 
 ## Example Usage
 
