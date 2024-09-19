@@ -7,11 +7,12 @@ import { createRequire } from 'module';
  * @param {Page} page
  */
 async function script(page) {
-    const inventory_url = `https://www.toyota.com/search-inventory/model/camryhybrid/?zipcode=${zipcode}`
+    const inventory_url = `https://www.toyota.com/search-inventory/model/camry/?zipcode=${zipcode}`
     const graphql_url = "https://api.search-inventory.toyota.com/graphql";
     const distance_sel = 'select[name="distance"]';
 
     await page.goto(inventory_url);
+    debugger;
     await page.waitForSelector(distance_sel);
     page.select(distance_sel, "100").then(() => console.log(`distance set to: ${distance}`));
 
@@ -41,11 +42,11 @@ async function script(page) {
         }
     }
 
-    fs.writeFile('data.json', JSON.stringify(vehicle_data), (err) => {
+    fs.writeFile('camry.json', JSON.stringify(vehicle_data), (err) => {
         if (err) {
             console.log(err)
         } else {
-            console.log('wrote inventory data to: data.json')
+            console.log('wrote inventory data to: camry.json')
         }
     })
 }

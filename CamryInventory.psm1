@@ -1,4 +1,4 @@
-$rawData = (Get-Content 'data.json' | ConvertFrom-Json)
+$rawData = (Get-Content 'camry.json' | ConvertFrom-Json)
 
 $dealer = @{
     Name       = 'dealer'
